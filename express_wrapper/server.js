@@ -19,17 +19,17 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const cn = {
-  host:'map.geog.mcgill.ca',
-  port: 49495,
-  database:'map',
-  user: 'noe',
+  host: process.env.PG_HOST, //'map.geog.mcgill.ca'
+  port: proccess.env.PG_PORT,
+  database: process.env.PG_DATABASE,
+  user: process.env.PG_USER,
   password: process.env.PG_PASSWORD
 }//login credentials should be hidden in the .env imported as above from the .env file
 const db = pgp(cn); //create a db object from the pg-promise object with the above credentials
 
 app.listen(port, () => console.log(`Listening on port ${port}`)); //just prints in the console *this can be commented out once the project is running
 
-  // create a GET route
+  //Test query
 app.get('/test', (req, res) => {
   res.send({ express: 'YOUR EXPRESS BACKEND IS CONNECTED TO REACT' }); //sample test *this can be commented out once the app is working
   console.log('test connection successfull');
@@ -45,8 +45,8 @@ app.post('/query', (req, res) => {
     res.send('data received'); //just data.
   }).catch(err => res.status(400).send(err))
 })
-
-app.post('/category_query', (req, res) => { //this is the main category query
+//Cateogry query option: to select using drop downs on the left sidebar
+app.post('/category_query', (req, res) => {
   let baseQuery = `
     SELECT
       s.service_id,
@@ -95,15 +95,15 @@ app.post('/category_query', (req, res) => { //this is the main category query
 
   db.any(baseQuery, params.map(p => p.value))
   .then(data => {
-      console.log('DATA:', data); // prints data, use data[i] to print specific entry attributes
+      console.log('DATA:', data);
       res.send(data);
   })
   .catch(error => {
       res.send('there has been an error, please contact Student Services to get this fixed.');
   })
 });
-
-app.post('/keywords_query', (req, res) => { //this is the main category query
+//Search by Keyword query: using user typed input to match results on right sidebar
+app.post('/keywords_query', (req, res) => {
   let baseQuery = `
     SELECT
       s.service_id,

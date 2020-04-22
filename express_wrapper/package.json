@@ -18,7 +18,7 @@
     "pg-monitor": "^1.1.0",
     "pg-pool": "^2.0.6",
     "pg-promise": "^8.6.4",
-    "sequelize": "^5.2.15"
+    "sequelize": "^5.15.1"
   },
   "devDependencies": {},
   "keywords": [],
